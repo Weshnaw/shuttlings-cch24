@@ -1,0 +1,33 @@
+meta {
+  name: Task 3.2: What happened to version 5?
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{host}}{{day}}/v6/key?from=aaaa::aaaa&to=5555:ffff:c:0:0:c:1234:5555
+  body: none
+  auth: none
+}
+
+params:query {
+  from: aaaa::aaaa
+  to: 5555:ffff:c:0:0:c:1234:5555
+}
+
+tests {
+  test("should receive 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("should receive key", function() {
+    const data = res.getBody();
+    expect(data).to.equal('ffff:ffff:c::c:1234:ffff');
+  });
+}
+
+docs {
+  To keep up with the times, Santa also wants to use this type of routing for IPv6 packets. He became a bit bored with elementary school math and decided that for IPv6 packets, the algorithm should use XOR instead of overflowing addition.
+  
+  Implement /2/v6/dest and /2/v6/key in the same way as in Task 1 and 2, but using IPv6 addresses.
+}

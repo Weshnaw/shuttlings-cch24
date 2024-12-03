@@ -1,0 +1,27 @@
+meta {
+  name: Task
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{host}}{{day}}/
+  body: none
+  auth: none
+}
+
+tests {
+  test("should receive 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("should receive text", function() {
+    const data = res.getBody();
+    expect(data).to.be.a('string');
+  });
+  
+  test("should receive `Hello, bird!`", function() {
+    const data = res.getBody();
+    expect(data).to.equal('Hello, bird!');
+  });
+}

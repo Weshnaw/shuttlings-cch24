@@ -5,9 +5,14 @@ meta {
 }
 
 get {
-  url: {{host}}
+  url: {{host}}{{day}}/dest?from=10.0.0.0&key=1.2.3.255
   body: none
   auth: none
+}
+
+params:query {
+  from: 10.0.0.0
+  key: 1.2.3.255
 }
 
 tests {
@@ -15,14 +20,9 @@ tests {
     expect(res.getStatus()).to.equal(200);
   });
   
-  test("should receive text", function() {
+  test("should receive encrypted result", function() {
     const data = res.getBody();
-    expect(data).to.be.a('string');
-  });
-  
-  test("should receive `Hello, bird!`", function() {
-    const data = res.getBody();
-    expect(data).to.equal('Hello, bird!');
+    expect(data).to.equal('11.2.3.255');
   });
 }
 

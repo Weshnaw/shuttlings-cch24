@@ -1,0 +1,33 @@
+meta {
+  name: Task 2: Going the other way
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{host}}{{day}}/key?from=10.0.0.0&to=11.2.3.255
+  body: none
+  auth: none
+}
+
+params:query {
+  from: 10.0.0.0
+  to: 11.2.3.255
+}
+
+tests {
+  test("should receive 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("should receive key", function() {
+    const data = res.getBody();
+    expect(data).to.equal('1.2.3.255');
+  });
+}
+
+docs {
+  Santa occasionally also wants to double check that the routing calculations are correct.
+  
+  Implement the GET endpoint /2/key that instead takes the parameters from and to and returns the key that was used to calculate the destination (it reverses the calculation in Task 1).
+}
