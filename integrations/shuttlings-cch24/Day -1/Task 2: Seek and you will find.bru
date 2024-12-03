@@ -1,0 +1,39 @@
+meta {
+  name: Task 2: Seek and you will find
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{host}}{{day}}/seek
+  body: none
+  auth: none
+}
+
+script:pre-request {
+  req.setMaxRedirects(0);
+}
+
+tests {
+  test("should receive 302", function() {
+    expect(res.getStatus()).to.equal(302);
+  });
+  
+  test("should receive location", function() {
+    const data = res.getHeader("location");
+    expect(data).to.equal('https://www.youtube.com/watch?v=9Gc4QTqslN4');
+  });
+  
+  test("should receive empty body", function() {
+    const data = res.getBody();
+    expect(data).to.equal('');
+  });
+}
+
+docs {
+  Santa thinks the North Pole has been awfully quiet since last year. "Time to introduce some cheerful tunes! Let's call it ✨Vibe of the Day✨. Now, where did I put that link to the first song?"
+  
+  For this bonus task, add an endpoint on /-1/seek that responds to GET requests with the 302 Found redirection response.
+  
+  For a 302 response to be valid, it needs to have the Location header set to where the requested resource can be found. The Location header value we want today is (as requested by Santa): https://www.youtube.com/watch?v=9Gc4QTqslN4
+}

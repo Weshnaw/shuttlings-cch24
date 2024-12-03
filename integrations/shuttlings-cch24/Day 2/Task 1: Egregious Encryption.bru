@@ -1,0 +1,37 @@
+meta {
+  name: Task 1: Egregious Encryption
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{host}}
+  body: none
+  auth: none
+}
+
+tests {
+  test("should receive 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("should receive text", function() {
+    const data = res.getBody();
+    expect(data).to.be.a('string');
+  });
+  
+  test("should receive `Hello, bird!`", function() {
+    const data = res.getBody();
+    expect(data).to.equal('Hello, bird!');
+  });
+}
+
+docs {
+  Santa is having his network routers in the data center igloo upgraded to the next generation. For reasons unknown, he uses a special IP routing algorithm to obfuscate the traffic on the internal network. (An elf said that it just looks like a terrible implementation of symmetric encryption.) He now needs your help to implement a simple web API for verifying the calculations in the routing algorithm.
+  
+  The algorithm for IPv4 adresses is as follows:
+  
+  To calculate the destination IP of a packet, take the source IP and apply a key address. The formula from + key == dest (where "+" is overflowing addition) is applied to each of the four octets separately.
+  
+  Make a GET endpoint /2/dest that takes the query parameters from and key and responds with the dest address as text.
+}

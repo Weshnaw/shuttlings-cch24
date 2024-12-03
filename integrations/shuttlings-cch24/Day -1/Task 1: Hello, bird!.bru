@@ -1,0 +1,33 @@
+meta {
+  name: Task 1: Hello, bird!
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{host}}
+  body: none
+  auth: none
+}
+
+tests {
+  test("should receive 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("should receive text", function() {
+    const data = res.getBody();
+    expect(data).to.be.a('string');
+  });
+  
+  test("should receive `Hello, bird!`", function() {
+    const data = res.getBody();
+    expect(data).to.equal('Hello, bird!');
+  });
+}
+
+docs {
+  Santa has grown tired of the "Hello, world!" phrase. Everyone uses it all the time! Time to switch things up and say... "Hello, bird!" Why? I hope we will find out.
+  
+  The starter template from the init command you ran earlier should have a root endpoint / responding to GET requests with a "Hello, world!" string and a 200 OK status code. Change the response string so that it responds with "Hello, bird!" instead.
+}
