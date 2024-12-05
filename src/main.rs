@@ -1,12 +1,13 @@
 use axum::{routing::get, Router};
-use shuttlings_cch24::{negone, two};
+use shuttlings_cch24::{day_00, day_02, day_05};
 
 #[shuttle_runtime::main]
 async fn main() -> shuttle_axum::ShuttleAxum {
     let router = Router::new()
-        .route("/", get(negone::hello_world))
-        .nest("/-1", negone::router())
-        .nest("/2", two::router());
+        .route("/", get(day_00::hello_world))
+        .nest("/-1", day_00::router())
+        .nest("/2", day_02::router())
+        .nest("/5", day_05::router());
 
     Ok(router.into())
 }
