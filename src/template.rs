@@ -12,15 +12,13 @@ pub async fn hello() -> &'static str {
 #[instrument]
 pub fn router() -> Router {
     debug!("Loading routes");
-    Router::new()
-        .route("/hello", get(hello))
+    Router::new().route("/hello", get(hello))
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
 
-    #[tokio::test]
-    async fn test_() {
-    }
+    #[test_log::test(tokio::test)]
+    async fn test_() {}
 }
