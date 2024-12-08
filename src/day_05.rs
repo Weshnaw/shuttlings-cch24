@@ -100,9 +100,10 @@ mod tests {
 
     use super::*;
 
-    #[test_log::test(tokio::test)]
-    async fn test_valid_manifest() {
-        let data = r#"
+    
+    #[rstest::rstest]
+    #[case::valid_toml(
+        r#"
 [package]
 name = "not-a-gift-order"
 authors = ["Not Santa"]
@@ -115,25 +116,13 @@ quantity = 2
 [[package.metadata.orders]]
 item = "Lego brick"
 quantity = 230
-"#;
-        let expected = r#"Toy car: 2
-Lego brick: 230"#;
-
-        let mut headers = HeaderMap::new();
-        headers.insert(
-            "Content-Type",
-            HeaderValue::from_str("application/toml").unwrap(),
-        );
-
-        let (status, body) = manifest(headers, data.to_string()).await;
-
-        assert_eq!(StatusCode::OK, status);
-        assert_eq!(expected, body);
-    }
-
-    #[test_log::test(tokio::test)]
-    async fn test_no_orders() {
-        let data = r#"
+"#,
+        "application/toml",
+        200,
+        r#"Toy car: 2
+Lego brick: 230"#)]
+    #[case::no_quantities(
+        r#"
 [package]
 name = "coal-in-a-bowl"
 authors = ["H4CK3R_13E7"]
@@ -142,58 +131,129 @@ keywords = ["Christmas 2024"]
 [[package.metadata.orders]]
 item = "Coal"
 quantity = "Hahaha get rekt"
-"#;
-        let mut headers = HeaderMap::new();
-        headers.insert(
-            "Content-Type",
-            HeaderValue::from_str("application/toml").unwrap(),
-        );
-
-        let (status, body) = manifest(headers, data.to_string()).await;
-
-        assert_eq!(StatusCode::from_u16(204).unwrap(), status);
-        assert_eq!("", body);
-    }
-
-    #[test_log::test(tokio::test)]
-    async fn test_invalid_manifest() {
-        let data = r#"
+"#,
+        "application/toml",
+        204,
+        "")]
+    #[case::invalid_manifest(
+        r#"
 [package]
 name = false
 authors = ["Not Santa"]
 keywords = ["Christmas 2024"]
-"#;
-        let mut headers = HeaderMap::new();
-        headers.insert(
-            "Content-Type",
-            HeaderValue::from_str("application/toml").unwrap(),
-        );
-
-        let (status, body) = manifest(headers, data.to_string()).await;
-
-        assert_eq!(StatusCode::from_u16(400).unwrap(), status);
-        assert_eq!("Invalid manifest", body);
-    }
-
-    #[test_log::test(tokio::test)]
-    async fn test_invalid_keyword() {
-        let data = r#"
+"#,
+        "application/toml",
+        400,
+        "Invalid manifest")]
+    #[case::missing_keyword(
+        r#"
 [package]
 name = "grass"
 authors = ["Not Santa"]
 keywords = ["Mooooo"]
-"#;
+"#,
+        "application/toml",
+        400,
+        "Magic keyword not provided"
+    )] 
+    #[case::invalid_content_type(
+        r#"
+[package]
+name = "not-a-gift-order"
+authors = ["Not Santa"]
+keywords = ["Christmas 2024"]
+
+[[package.metadata.orders]]
+item = "Toy car"
+quantity = 2
+
+[[package.metadata.orders]]
+item = "Lego brick"
+quantity = 230
+"#,
+        "application/html",
+        415,
+        ""
+    )] 
+    #[case::valid_yaml(
+        r#"
+package:
+  name: big-chungus-sleigh
+  version: "2.0.24"
+  metadata:
+    orders:
+      - item: "Toy train"
+        quantity: 5
+      - item: "Toy car"
+        quantity: 3
+  rust-version: "1.69"
+  keywords:
+    - "Christmas 2024"
+"#,
+        "application/yaml",
+        200,
+        r#"Toy train: 5
+Toy car: 3"#
+    )] 
+    #[case::valid_json(
+        r#"
+{
+  "package": {
+    "name": "big-chungus-sleigh",
+    "version": "2.0.24",
+    "metadata": {
+      "orders": [
+        {
+          "item": "Toy train",
+          "quantity": 5
+        },
+        {
+          "item": "Toy car",
+          "quantity": 3
+        }
+      ]
+    },
+    "rust-version": "1.69",
+    "keywords": [
+      "Christmas 2024"
+    ]
+  }
+}
+"#,
+        "application/json",
+        200,
+        r#"Toy train: 5
+Toy car: 3"#
+    )] 
+    #[case::mismatched_content_type(
+        r#"
+[package]
+name = "not-a-gift-order"
+authors = ["Not Santa"]
+keywords = ["Christmas 2024"]
+
+[[package.metadata.orders]]
+item = "Toy car"
+quantity = 2
+
+[[package.metadata.orders]]
+item = "Lego brick"
+quantity = 230
+"#,
+        "application/json",
+        400,
+        "Invalid manifest")]
+    #[test_log::test(tokio::test)]
+    async fn test_valid_manifest(#[case] data: &str, #[case] content_type: &str, #[case] expected_status: u16, #[case] expected_body: &str) {
         let mut headers = HeaderMap::new();
         headers.insert(
             "Content-Type",
-            HeaderValue::from_str("application/toml").unwrap(),
+            HeaderValue::from_str(content_type).unwrap(),
         );
 
         let (status, body) = manifest(headers, data.to_string()).await;
 
-        assert_eq!(StatusCode::from_u16(400).unwrap(), status);
-        assert_eq!("Magic keyword not provided", body);
+        assert_eq!(StatusCode::from_u16(expected_status).unwrap(), status);
+        assert_eq!(expected_body, body);
     }
-
-    // TODO: yaml, json, invalid content-type unit tests
 }
