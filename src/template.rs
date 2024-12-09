@@ -4,7 +4,7 @@ use axum::{routing::get, Router};
 use tracing::{debug, instrument};
 
 #[instrument]
-pub async fn hello() -> &'static str {
+async fn hello() -> &'static str {
     debug!("Calling hello_world");
     "Hello, bird!"
 }
