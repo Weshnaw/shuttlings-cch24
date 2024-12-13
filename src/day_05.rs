@@ -71,7 +71,7 @@ async fn manifest(headers: HeaderMap, data: String) -> (StatusCode, String) {
         });
 
         info!(?orders);
-        if orders.len() > 0 {
+        if !orders.is_empty() {
             let result = orders
                 .iter()
                 .map(|(k, v)| format!("{k}: {v}"))
@@ -100,7 +100,6 @@ mod tests {
 
     use super::*;
 
-    
     #[rstest::rstest]
     #[case::valid_toml(
         r#"
@@ -120,7 +119,8 @@ quantity = 230
         "application/toml",
         200,
         r#"Toy car: 2
-Lego brick: 230"#)]
+Lego brick: 230"#
+    )]
     #[case::no_quantities(
         r#"
 [package]
@@ -134,7 +134,8 @@ quantity = "Hahaha get rekt"
 "#,
         "application/toml",
         204,
-        "")]
+        ""
+    )]
     #[case::invalid_manifest(
         r#"
 [package]
@@ -144,7 +145,8 @@ keywords = ["Christmas 2024"]
 "#,
         "application/toml",
         400,
-        "Invalid manifest")]
+        "Invalid manifest"
+    )]
     #[case::missing_keyword(
         r#"
 [package]
@@ -155,7 +157,7 @@ keywords = ["Mooooo"]
         "application/toml",
         400,
         "Magic keyword not provided"
-    )] 
+    )]
     #[case::invalid_content_type(
         r#"
 [package]
@@ -174,7 +176,7 @@ quantity = 230
         "application/html",
         415,
         ""
-    )] 
+    )]
     #[case::valid_yaml(
         r#"
 package:
@@ -194,7 +196,7 @@ package:
         200,
         r#"Toy train: 5
 Toy car: 3"#
-    )] 
+    )]
     #[case::valid_json(
         r#"
 {
@@ -224,7 +226,7 @@ Toy car: 3"#
         200,
         r#"Toy train: 5
 Toy car: 3"#
-    )] 
+    )]
     #[case::mismatched_content_type(
         r#"
 [package]
@@ -242,14 +244,17 @@ quantity = 230
 "#,
         "application/json",
         400,
-        "Invalid manifest")]
+        "Invalid manifest"
+    )]
     #[test_log::test(tokio::test)]
-    async fn test_valid_manifest(#[case] data: &str, #[case] content_type: &str, #[case] expected_status: u16, #[case] expected_body: &str) {
+    async fn test_valid_manifest(
+        #[case] data: &str,
+        #[case] content_type: &str,
+        #[case] expected_status: u16,
+        #[case] expected_body: &str,
+    ) {
         let mut headers = HeaderMap::new();
-        headers.insert(
-            "Content-Type",
-            HeaderValue::from_str(content_type).unwrap(),
-        );
+        headers.insert("Content-Type", HeaderValue::from_str(content_type).unwrap());
 
         let (status, body) = manifest(headers, data.to_string()).await;
 

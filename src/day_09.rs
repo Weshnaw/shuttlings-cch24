@@ -22,10 +22,10 @@ struct MilkState {
 #[derive(Deserialize, Serialize, PartialEq, Debug)]
 #[serde(rename_all = "lowercase")]
 enum MilkUnit {
-    LITERS(f32),
-    GALLONS(f32),
-    LITRES(f32),
-    PINTS(f32),
+    Liters(f32),
+    Gallons(f32),
+    Litres(f32),
+    Pints(f32),
 }
 
 #[derive(Deserialize, Serialize, PartialEq, Debug)]
@@ -47,10 +47,10 @@ async fn milk(State(state): State<MilkState>, headers: HeaderMap, body: String) 
                 debug!(?body);
                 if let Ok(conversion) = serde_json::from_str::<MilkConversion>(&body) {
                     let unit = match conversion.unit {
-                        MilkUnit::LITERS(liters) => MilkUnit::GALLONS(liters * 0.2641720524),
-                        MilkUnit::GALLONS(gallons) => MilkUnit::LITERS(gallons * 3.785411784),
-                        MilkUnit::LITRES(litres) => MilkUnit::PINTS(litres * 1.7597539864),
-                        MilkUnit::PINTS(pints) => MilkUnit::LITRES(pints * 0.56826125),
+                        MilkUnit::Liters(liters) => MilkUnit::Gallons(liters * 0.264_172_05),
+                        MilkUnit::Gallons(gallons) => MilkUnit::Liters(gallons * 3.785_411_8),
+                        MilkUnit::Litres(litres) => MilkUnit::Pints(litres * 1.759_754),
+                        MilkUnit::Pints(pints) => MilkUnit::Litres(pints * 0.568_261_25),
                     };
                     info!(?unit);
                     let converted = MilkConversion { unit };
@@ -175,9 +175,9 @@ mod tests {
 
         milk_conversion_request(
             &server,
-            MilkUnit::LITERS(5.0),
+            MilkUnit::Liters(5.0),
             StatusCode::OK,
-            MilkUnit::GALLONS(1.3208603),
+            MilkUnit::Gallons(1.3208603),
         )
         .await;
     }
@@ -188,9 +188,9 @@ mod tests {
 
         milk_conversion_request(
             &server,
-            MilkUnit::GALLONS(5.0),
+            MilkUnit::Gallons(5.0),
             StatusCode::OK,
-            MilkUnit::LITERS(18.92706),
+            MilkUnit::Liters(18.92706),
         )
         .await;
     }
@@ -202,17 +202,17 @@ mod tests {
         for _ in 0..5 {
             milk_conversion_request(
                 &server,
-                MilkUnit::GALLONS(5.0),
+                MilkUnit::Gallons(5.0),
                 StatusCode::OK,
-                MilkUnit::LITERS(18.92706),
+                MilkUnit::Liters(18.92706),
             )
             .await;
         }
         milk_conversion_request(
             &server,
-            MilkUnit::GALLONS(5.0),
+            MilkUnit::Gallons(5.0),
             StatusCode::TOO_MANY_REQUESTS,
-            MilkUnit::LITERS(18.92706),
+            MilkUnit::Liters(18.92706),
         )
         .await;
     }
