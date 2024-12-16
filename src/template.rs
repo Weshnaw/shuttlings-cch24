@@ -2,18 +2,16 @@
 
 use axum::{
     response::{IntoResponse, Response},
-    routing::{get, post},
+    routing::get,
     Router,
 };
-use tracing::{debug, instrument};
+use tracing::debug;
 
-#[instrument]
 async fn hello() -> Response {
     debug!("Calling hello");
     "Hello, bird!".into_response()
 }
 
-#[instrument]
 pub fn router() -> Router {
     debug!("Loading routes");
     Router::new()
