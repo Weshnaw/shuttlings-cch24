@@ -262,12 +262,13 @@ mod tests {
 
     use super::*;
 
-    const EMPTY_STATE: &str = r#"⬜⬛⬛⬛⬛⬜
+    const EMPTY_STATE: &str = "\
+⬜⬛⬛⬛⬛⬜
 ⬜⬛⬛⬛⬛⬜
 ⬜⬛⬛⬛⬛⬜
 ⬜⬛⬛⬛⬛⬜
 ⬜⬜⬜⬜⬜⬜
-"#;
+";
 
     #[rstest::fixture]
     fn server() -> TestServer {
@@ -318,45 +319,51 @@ mod tests {
     ])]
     #[case::basic_cookie_win(&[
          Advance::Reset,
-         Advance::Place(1, "cookie", StatusCode::OK, Some(r#"⬜⬛⬛⬛⬛⬜
+         Advance::Place(1, "cookie", StatusCode::OK, Some("\
+⬜⬛⬛⬛⬛⬜
 ⬜⬛⬛⬛⬛⬜
 ⬜⬛⬛⬛⬛⬜
 ⬜🍪⬛⬛⬛⬜
 ⬜⬜⬜⬜⬜⬜
-"#)),
-         Advance::Place(1, "cookie", StatusCode::OK, Some(r#"⬜⬛⬛⬛⬛⬜
+")),
+         Advance::Place(1, "cookie", StatusCode::OK, Some("\
+⬜⬛⬛⬛⬛⬜
 ⬜⬛⬛⬛⬛⬜
 ⬜🍪⬛⬛⬛⬜
 ⬜🍪⬛⬛⬛⬜
 ⬜⬜⬜⬜⬜⬜
-"#)),
-         Advance::Place(1, "cookie", StatusCode::OK, Some(r#"⬜⬛⬛⬛⬛⬜
+")),
+         Advance::Place(1, "cookie", StatusCode::OK, Some("\
+⬜⬛⬛⬛⬛⬜
 ⬜🍪⬛⬛⬛⬜
 ⬜🍪⬛⬛⬛⬜
 ⬜🍪⬛⬛⬛⬜
 ⬜⬜⬜⬜⬜⬜
-"#)),
-         Advance::Place(1, "cookie", StatusCode::OK, Some(r#"⬜🍪⬛⬛⬛⬜
+")),
+         Advance::Place(1, "cookie", StatusCode::OK, Some("\
+⬜🍪⬛⬛⬛⬜
 ⬜🍪⬛⬛⬛⬜
 ⬜🍪⬛⬛⬛⬜
 ⬜🍪⬛⬛⬛⬜
 ⬜⬜⬜⬜⬜⬜
 🍪 wins!
-"#)),
-         Advance::Place(1, "cookie", StatusCode::SERVICE_UNAVAILABLE, Some(r#"⬜🍪⬛⬛⬛⬜
+")),
+         Advance::Place(1, "cookie", StatusCode::SERVICE_UNAVAILABLE, Some("\
 ⬜🍪⬛⬛⬛⬜
-⬜🍪⬛⬛⬛⬜
-⬜🍪⬛⬛⬛⬜
-⬜⬜⬜⬜⬜⬜
-🍪 wins!
-"#)),
-         Advance::Place(2, "cookie", StatusCode::SERVICE_UNAVAILABLE, Some(r#"⬜🍪⬛⬛⬛⬜
 ⬜🍪⬛⬛⬛⬜
 ⬜🍪⬛⬛⬛⬜
 ⬜🍪⬛⬛⬛⬜
 ⬜⬜⬜⬜⬜⬜
 🍪 wins!
-"#)),
+")),
+         Advance::Place(2, "cookie", StatusCode::SERVICE_UNAVAILABLE, Some("\
+⬜🍪⬛⬛⬛⬜
+⬜🍪⬛⬛⬛⬜
+⬜🍪⬛⬛⬛⬜
+⬜🍪⬛⬛⬛⬜
+⬜⬜⬜⬜⬜⬜
+🍪 wins!
+")),
       ])]
     #[case::easy_diag_cookie_win(&[
          Advance::Reset,
@@ -369,13 +376,14 @@ mod tests {
          Advance::Place(4, "cookie", StatusCode::OK, None),
          Advance::Place(3, "cookie", StatusCode::OK, None),
          Advance::Place(4, "cookie", StatusCode::OK, None),
-         Advance::Place(4, "cookie", StatusCode::OK, Some(r#"⬜⬛⬛⬛🍪⬜
+         Advance::Place(4, "cookie", StatusCode::OK, Some("\
+⬜⬛⬛⬛🍪⬜
 ⬜⬛⬛🍪🍪⬜
 ⬜⬛🍪🍪🍪⬜
 ⬜🍪🍪🍪🥛⬜
 ⬜⬜⬜⬜⬜⬜
 🍪 wins!
-"#)),
+")),
       ])]
     #[case::hard_diag_cookie_win(&[
          Advance::Reset,
@@ -388,13 +396,14 @@ mod tests {
          Advance::Place(1, "cookie", StatusCode::OK, None),
          Advance::Place(2, "cookie", StatusCode::OK, None),
          Advance::Place(1, "cookie", StatusCode::OK, None),
-         Advance::Place(1, "cookie", StatusCode::OK, Some(r#"⬜🍪⬛⬛⬛⬜
+         Advance::Place(1, "cookie", StatusCode::OK, Some("\
+⬜🍪⬛⬛⬛⬜
 ⬜🍪🍪⬛⬛⬜
 ⬜🍪🍪🍪⬛⬜
 ⬜🥛🍪🍪🍪⬜
 ⬜⬜⬜⬜⬜⬜
 🍪 wins!
-"#)),
+")),
       ])]
     #[case::no_winner(&[
          Advance::Reset,
@@ -413,13 +422,14 @@ mod tests {
          Advance::Place(4, "milk", StatusCode::OK, None),
          Advance::Place(4, "milk", StatusCode::OK, None),
          Advance::Place(4, "milk", StatusCode::OK, None),
-         Advance::Place(4, "cookie", StatusCode::OK, Some(r#"⬜🥛🍪🥛🍪⬜
+         Advance::Place(4, "cookie", StatusCode::OK, Some("\
+⬜🥛🍪🥛🍪⬜
 ⬜🍪🥛🍪🥛⬜
 ⬜🍪🥛🍪🥛⬜
 ⬜🍪🥛🍪🥛⬜
 ⬜⬜⬜⬜⬜⬜
 No winner.
-"#)),
+")),
       ])]
     #[test_log::test(tokio::test)]
     async fn test_gameplay(server: TestServer, #[case] steps: &[Advance<'_>]) {
@@ -450,12 +460,13 @@ No winner.
         debug!(?result);
         result.assert_status_ok();
         result.assert_text_contains(
-            r#"⬜🍪🍪🍪🍪⬜
+            "\
+⬜🍪🍪🍪🍪⬜
 ⬜🥛🍪🍪🥛⬜
 ⬜🥛🥛🥛🥛⬜
 ⬜🍪🥛🍪🥛⬜
 ⬜⬜⬜⬜⬜⬜
-"#,
+",
         );
 
         let result = server.get(&"/random-board").await;
@@ -463,13 +474,14 @@ No winner.
         debug!(?result);
         result.assert_status_ok();
         result.assert_text(
-            r#"⬜🍪🥛🍪🍪⬜
+            "\
+⬜🍪🥛🍪🍪⬜
 ⬜🥛🍪🥛🍪⬜
 ⬜🥛🍪🍪🍪⬜
 ⬜🍪🥛🥛🥛⬜
 ⬜⬜⬜⬜⬜⬜
 No winner.
-"#,
+",
         );
     }
 }
