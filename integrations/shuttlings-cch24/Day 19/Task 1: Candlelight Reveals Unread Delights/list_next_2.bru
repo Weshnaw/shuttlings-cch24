@@ -1,0 +1,15 @@
+meta {
+  name: list_next_2
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{host}}{{day}}/list?token=00000LygHa16AHYD
+  body: json
+  auth: none
+}
+
+params:query {
+  token: 00000LygHa16AHYD
+}

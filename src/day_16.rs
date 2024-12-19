@@ -49,7 +49,7 @@ async fn decode(data: String) -> Response {
     let header = jsonwebtoken::decode_header(&data);
     debug!(?header);
 
-    let pem = include_bytes!("day16_santa_public_key.pem");
+    let pem = include_bytes!("day_16_santa_public_key.pem");
 
     let key = DecodingKey::from_rsa_pem(pem).expect("Unable to create decoding key");
 

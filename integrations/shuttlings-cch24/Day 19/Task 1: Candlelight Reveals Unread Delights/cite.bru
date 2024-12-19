@@ -1,0 +1,18 @@
+meta {
+  name: cite
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{host}}{{day}}/cite/{{id}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "author": "Santa",
+    "quote": "Ho ho ho!"
+  }
+}

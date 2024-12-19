@@ -1,11 +1,11 @@
 meta {
-  name: Task
+  name: reset
   type: http
   seq: 1
 }
 
-get {
-  url: {{host}}{{day}}/
+post {
+  url: {{host}}{{day}}/reset
   body: none
   auth: none
 }

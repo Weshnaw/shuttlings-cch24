@@ -1,0 +1,14 @@
+{
+    "rust-analyzer.server.extraEnv": {
+        "DATABASE_URL": "postgres://postgres:postgres@localhost:24145/shuttlings-cch24"
+    },
+    "rust-analyzer.check.extraEnv": {
+        "DATABASE_URL": "postgres://postgres:postgres@localhost:24145/shuttlings-cch24"
+    },
+    "rust-analyzer.runnables.extraEnv": {
+        "DATABASE_URL": "postgres://postgres:postgres@localhost:24145/shuttlings-cch24"
+    },
+    "rust-analyzer.cargo.extraEnv": {
+        "DATABASE_URL": "postgres://postgres:postgres@localhost:24145/shuttlings-cch24"
+    }
+}

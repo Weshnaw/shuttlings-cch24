@@ -1,0 +1,23 @@
+meta {
+  name: draft
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{host}}{{day}}/draft
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "author": "Santa",
+    "quote": "Ho ho ho!"
+  }
+}
+
+script:post-response {
+  let data = res.getBody();
+  bru.setVar("id", data.id);
+}
