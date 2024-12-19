@@ -205,6 +205,7 @@ mod tests {
             .await;
         server
     }
+    
     #[rstest::rstest]
     #[test_log::test(tokio::test)]
     async fn test_reset(#[future] server: TestServer, #[future] pool: sqlx::PgPool) {
@@ -222,7 +223,7 @@ mod tests {
 
         res.assert_status_success();
 
-        let db_quote = query_as!(Quote, r#"SELECT * FROM quotes"#,)
+        let db_quote = query_as!(Quote, "SELECT * FROM quotes",)
             .fetch_all(&pool)
             .await
             .unwrap();
