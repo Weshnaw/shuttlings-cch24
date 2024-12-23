@@ -1,2 +1,7 @@
 [deploy]
 deny_dirty = true
+
+[build]
+assets = [
+    "assets"
+]

@@ -205,7 +205,7 @@ mod tests {
             .await;
         server
     }
-    
+ 
     #[rstest::rstest]
     #[test_log::test(tokio::test)]
     async fn test_reset(#[future] server: TestServer, #[future] pool: sqlx::PgPool) {
